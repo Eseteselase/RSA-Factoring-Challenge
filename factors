@@ -2,6 +2,13 @@
 FILE=$1
 while read -r NUMBERS;
 do
-	factors=($(factor $NUMBERS))
-	echo "$NUMBERS=$(($NUMBERS/${factors[1]}))*${factors[1]}"
-done < $FILE | parallel -j0
+	echo "Processing $NUMBER"
+	i=2
+	while [ $i -le $((NUMBER/2)) ]; do
+		if [ $((NUMBER % i)) -eq 0 ]; then
+			echo "$NUMBER=$(($NUMBER/$i))*$i"
+			break
+		fi
+		((i++))
+	done
+done < "$FILE"
