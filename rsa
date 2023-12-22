@@ -7,11 +7,11 @@ check_factor()
                 args=("$@")
                 count=0
                 num2=1
-                for a in ${args[*]};
+                for a in "${args[@]}";
                 do
                         if [ $count -gt 1 ];
                         then
-                                num2=$(echo $a*$num2 | bc)
+				num2=$((a * num2))
                         fi
                         count=$((count + 1))
                 done
@@ -20,7 +20,7 @@ check_factor()
         fi
 
         num1=$2
-        num=$(echo "$1" | tr ':' '=')
+        num=$1
 
         result=$(echo "if($num2 > $num1) 1 else 0" | bc)
 	        if ((result == 1)); then
@@ -29,7 +29,7 @@ check_factor()
 		        num2=$numcp
                 fi
 
-        echo "$num$num1*$num2"
+        echo "$num=$num1*$num2"
 }
 
 if [ $# -ne 1 ]
