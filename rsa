@@ -1,32 +1,48 @@
-#!/usr/bin/python3
+#!/usr/bin/env bash
+#is a challenge
+check_factor()
+{
+	if [ $# -ne 3 ];
+        then
+                args=("$@")
+                count=0
+                num2=1
+                for a in ${args[*]};
+                do
+                        if [ $count -gt 1 ];
+                        then
+                                num2=$(echo $a*$num2 | bc)
+                        fi
+                        count=$((count + 1))
+                done
+        else
+                num2=$3
+        fi
 
-def factorize_rsa_number(n):
-    factors = []
-    i = 2
+        num1=$2
+        num=$(echo "$1" | tr ':' '=')
 
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-            factors.append(i)
+        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
+	        if ((result == 1)); then
+		        numcp=$num1
+		        num1=$num2
+		        num2=$numcp
+                fi
 
-    if n > 1:
-        factors.append(n)
+        echo "$num$num1*$num2"
+}
 
-    return factors
+if [ $# -ne 1 ]
+then
+        echo 'Usage: rsa <file>'
+        exit 1
+else
 
-def format_output(n, factors):
-    return f"{n}={'*'.join(map(str, factors))}"
+        while read i
+        do
 
-def main():
-    # Example usage
-    rsa_numbers = [6, 77, 239821585064027, 2497885147362973]
+                result=$(factor "$i")
+                check_factor $result
 
-    for n in rsa_numbers:
-        factors = factorize_rsa_number(n)
-        output = format_output(n, factors)
-        print(output)
-
-if __name__ == "__main__":
-    main()
+        done < "$1"
+fi
